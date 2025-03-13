@@ -1,0 +1,772 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çift Yönlü Bağlı Liste (Doubly Linked List) - Yusuf Talha Kılıç(1210606019)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --bg-color: #f7f9fc;
+            --text-color: #2c3e50;
+            --light-text: #7f8c8d;
+            --border-color: #dfe6e9;
+            --card-bg: #ffffff;
+            --hover-color: #f1f5f9;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header-background {
+            background: linear-gradient(135deg, #4a6baf 0%, #2b4280 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .header-content h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        /* Header kartları container */
+        .header-cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Kart stili - hem öğrenci hem de GitHub kartları için */
+        .student-card, .github-card {
+            flex: 1;
+            min-width: 300px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .student-card:hover, .github-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Kart başlığı */
+        .card-header {
+            padding: 15px 20px;
+            background: linear-gradient(to right, #4a6baf, #2b4280);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.4rem;
+        }
+
+        .card-icon {
+            font-size: 1.8rem;
+        }
+
+        /* Kart içeriği */
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-content p {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-content p i {
+            color: #4a6baf;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Sosyal medya bağlantıları */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 15px;
+        }
+
+        .social-link {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            color: #333;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+
+        .social-link:hover {
+            background-color: #4a6baf;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* GitHub kart stili */
+        .github-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .github-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 10px;
+        }
+
+        .github-stat i {
+            font-size: 1.5rem;
+            color: #4a6baf;
+        }
+
+        .github-description {
+            padding: 5px 0 15px;
+            text-align: center;
+        }
+
+        .github-button {
+            display: block;
+            text-align: center;
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .github-button:hover {
+            background-color: #4a6baf;
+        }
+        
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .flex-item {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card h2 {
+            color:  #4a6baf;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card h2 i {
+            color: var(--secondary-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #4a6baf;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            margin: 2px;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-danger {
+            background-color: var(--accent-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 15px;
+        }
+        
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .list-visualization {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 20px 0;
+            min-height: 80px;
+        }
+        
+        .node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
+        .node-data {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 60px;
+            height: 60px;
+            background-color:  #4a6baf;
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .node-arrows {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            position: absolute;
+            top: 50%;
+            z-index: 1;
+        }
+        
+        .arrow {
+            position: relative;
+            height: 2px;
+            width: 20px;
+            background-color: var(--secondary-color);
+        }
+        
+        .arrow::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-top: 2px solid var(--secondary-color);
+            border-right: 2px solid var(--secondary-color);
+        }
+        
+        .arrow-right {
+            right: -10px;
+        }
+        
+        .arrow-right::after {
+            right: 0;
+            transform: rotate(45deg);
+        }
+        
+        .arrow-left {
+            left: -10px;
+        }
+        
+        .arrow-left::after {
+            left: 0;
+            transform: rotate(-135deg);
+        }
+        
+        .list-empty {
+            color: var(--light-text);
+            text-align: center;
+            font-style: italic;
+            width: 100%;
+        }
+        
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        
+        .history-item {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.3s;
+        }
+        
+        .history-item:hover {
+            background-color: var(--hover-color);
+        }
+        
+        .history-item .timestamp {
+            color: var(--light-text);
+            font-size: 0.8rem;
+        }
+        
+        .history-item .operation {
+            font-weight: bold;
+            color:  #4a6baf;
+        }
+        
+        .history-item .details {
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--hover-color);
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+        
+        .explanation h3 {
+            margin-bottom: 10px;
+            color:  #4a6baf;
+        }
+        
+        .explanation ul {
+            padding-left: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .explanation code {
+            background-color: var(--bg-color);
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        
+        .explanation img {
+            max-width: 100%;
+            margin: 15px 0;
+        }
+        
+        .explanation p {
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px 0;
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .flex-container {
+                flex-direction: column;
+            }
+            
+            .flex-item {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-background">
+                <div class="header-content">
+                    <h1>Çift Yönlü Bağlı Liste Uygulaması</h1>
+                    <p class="header-subtitle">Çift yönlü bağlı listeler üzerinde kopyalama ve tersine çevirme işlemleri</p>
+                </div>
+            </div>
+            
+            <div class="header-cards">
+                
+                <div class="student-card">
+                    <div class="card-header">
+                        <i class="fas fa-user-graduate card-icon"></i>
+                        <h2>{{ student_info.name }}</h2>
+                    </div>
+                    <div class="card-content">
+                        <p class="student-id"><i class="fas fa-id-card"></i> Öğrenci No: {{ student_info.id }}</p>
+                        <p class="course"><i class="fas fa-book"></i> {{ student_info.course }}</p>
+                        <p class="homework"><i class="fas fa-tasks"></i> {{ student_info.homework }}</p>
+                        
+                        
+                        <div class="social-links">
+                            <a href="https://github.com/yusuftalhaklc/" target="_blank" title="GitHub" class="social-link">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/in/yusuftalhaklc/" target="_blank" title="LinkedIn" class="social-link">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="mailto:1210606019@nku.edu.tr" title="E-posta" class="social-link">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <div class="github-card">
+                    <div class="card-header">
+                        <i class="fab fa-github card-icon"></i>
+                        <h2>Proje Kaynağı</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="github-stats">
+                            <div class="github-stat">
+                                <i class="fas fa-code"></i>
+                                <span>Python</span>
+                            </div>
+                            <div class="github-stat">
+                                <i class="fas fa-code-branch"></i>
+                                <span>Doubly Linked List</span>
+                            </div>
+                            <div class="github-stat">
+                                <i class="fas fa-flask"></i>
+                                <span>Flask Web App</span>
+                            </div>
+                        </div>
+                        <div class="github-description">
+                            <p>Bu uygulama çift yönlü bağlı liste veri yapısını interaktif olarak görselleştiren bir web uygulamasıdır.</p>
+                        </div>
+                        <a href="https://github.com/yusuftalhaklc/nku-bmsb436-22-dll" target="_blank" class="github-button">
+                            <i class="fab fa-github"></i> GitHub'da Görüntüle
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex-container">
+            <div class="flex-item">
+                <div class="card">
+                    <h2><i class="fas fa-list"></i> Çift Yönlü Bağlı Liste</h2>
+                    
+                    <div class="list-visualization" id="list-visualization">
+                        {% if list_data %}
+                            {% for item in list_data %}
+                                <div class="node">
+                                    <div class="node-data">{{ item }}</div>
+                                    {% if not loop.first %}
+                                    <div class="node-arrows">
+                                        <div class="arrow arrow-left"></div>
+                                    </div>
+                                    {% endif %}
+                                    {% if not loop.last %}
+                                    <div class="node-arrows">
+                                        <div class="arrow arrow-right"></div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="list-empty">Liste boş. Eleman ekleyiniz.</div>
+                        {% endif %}
+                    </div>
+                    
+                    <form id="add-element-form">
+                        <input type="text" name="value" id="element-value" placeholder="Eleman değeri" required>
+                        <button type="submit" class="btn">Eleman Ekle</button>
+                    </form>
+                    
+                    <div class="btn-group">
+                        <button id="clear-list-btn" class="btn btn-danger">Listeyi Temizle</button>
+                        <button id="load-example-btn" class="btn">Örnek Liste Yükle</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2><i class="fas fa-code-branch"></i> İşlemler</h2>
+                    <div class="btn-group">
+                        <button id="copy-list-btn" class="btn">Listeyi Kopyala</button>
+                        <button id="reverse-list-btn" class="btn">Listeyi Tersine Çevir</button>
+                        <button id="copy-and-reverse-btn" class="btn">Kopyala ve Tersine Çevir</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex-item">
+                <div class="card">
+                    <h2><i class="fas fa-history"></i> İşlem Geçmişi</h2>
+                    <div class="history-list" id="history-list">
+                        {% if history %}
+                            {% for item in history|reverse %}
+                                <div class="history-item">
+                                    <div class="timestamp">{{ item.timestamp }}</div>
+                                    <div class="operation">{{ item.operation }}</div>
+                                    <div class="details">{{ item.details }}</div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="list-empty">İşlem geçmişi boş.</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button id="clear-history-btn" class="btn btn-danger">Geçmişi Temizle</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2><i class="fas fa-book"></i> Çift Yönlü Bağlı Liste Açıklaması</h2>
+            <div class="explanation">
+                <h3>Çift Yönlü Bağlı Liste (Doubly Linked List) Nedir?</h3>
+                <p>Çift yönlü bağlı liste, her düğümün hem bir sonraki hem de bir önceki düğüme referans içerdiği bir veri yapısıdır. Bu yapı, liste üzerinde iki yönlü gezinmeye olanak sağlar.</p>
+                
+                <h3>Özellikleri:</h3>
+                <ul>
+                    <li>Her düğüm veri ve iki referans içerir: <code>prev</code> (önceki) ve <code>next</code> (sonraki)</li>
+                    <li>Listenin başlangıcı (<code>head</code>) ve sonu (<code>tail</code>) belirtilir</li>
+                    <li>Hem baştan sona hem de sondan başa gezinme imkanı sunar</li>
+                    <li>Düğüm ekleme, silme ve güncelleme işlemleri yapılabilir</li>
+                </ul>
+                
+                <h3>Avantajları:</h3>
+                <ul>
+                    <li>İki yönlü gezinme imkanı</li>
+                    <li>Bir düğümün önceki düğümü bilindiği için silme işlemi daha kolay</li>
+                    <li>Listenin sonuna ekleme işlemi O(1) karmaşıklığında gerçekleştirilebilir</li>
+                </ul>
+                
+                <h3>Dezavantajları:</h3>
+                <ul>
+                    <li>Her düğüm için ekstra bellek kullanımı (ek referans)</li>
+                    <li>Ekleme/silme işlemlerinde referansların dikkatli güncellenmesi gerekir</li>
+                </ul>
+                
+                <h3>Bu Uygulamada Yapılan İşlemler:</h3>
+                <ol>
+                    <li><strong>Kopyalama:</strong> Mevcut listeyi kopyalayarak yeni bir liste oluşturur</li>
+                    <li><strong>Tersine Çevirme:</strong> Listeyi yerinde tersine çevirir (düğümlerin prev ve next referansları değiştirilir)</li>
+                    <li><strong>Kopyalama ve Tersine Çevirme:</strong> Önce listeyi kopyalar, sonra kopyayı tersine çevirir</li>
+                </ol>
+                
+                <h3>Örnek Kod:</h3>
+                <p>Çift yönlü bağlı listenin temel yapısı:</p>
+                <pre><code>
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+        self.prev = None
+
+class DoublyLinkedList:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+                </code></pre>
+                
+                <p>Tersine çevirme işlemi:</p>
+                <pre><code>
+def reverse(self):
+    if not self.head or self.size <= 1:
+        return self
+    
+    current = self.head
+    # Geçici olarak head ve tail'i değiştiriyoruz
+    self.head, self.tail = self.tail, self.head
+    
+    # Her düğümün next ve prev işaretçilerini değiştiriyoruz
+    while current:
+        # next ve prev değerlerini takas et
+        current.next, current.prev = current.prev, current.next
+        # Bir sonraki (şimdi "önceki") düğüme geç
+        current = current.prev
+    
+    return self
+                </code></pre>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 Yusuf Talha Kılıç(1210606019) | BMSB436. Python Programlamaya Giriş</p>
+        </footer>
+    </div>
+
+    <script>
+        // Helper function for rendering the list visualization
+        function renderList(listData) {
+            const listContainer = document.getElementById('list-visualization');
+            
+            if (!listData || listData.length === 0) {
+                listContainer.innerHTML = '<div class="list-empty">Liste boş. Eleman ekleyiniz.</div>';
+                return;
+            }
+            
+            let html = '';
+            
+            listData.forEach((item, index) => {
+                html += `<div class="node">
+                    <div class="node-data">${item}</div>`;
+                
+                if (index > 0) {
+                    html += `<div class="node-arrows">
+                        <div class="arrow arrow-left"></div>
+                    </div>`;
+                }
+                
+                if (index < listData.length - 1) {
+                    html += `<div class="node-arrows">
+                        <div class="arrow arrow-right"></div>
+                    </div>`;
+                }
+                
+                html += `</div>`;
+            });
+            
+            listContainer.innerHTML = html;
+        }
+        
+        // Helper function for rendering history
+        function renderHistory(historyData) {
+            const historyContainer = document.getElementById('history-list');
+            
+            if (!historyData || historyData.length === 0) {
+                historyContainer.innerHTML = '<div class="list-empty">İşlem geçmişi boş.</div>';
+                return;
+            }
+            
+            let html = '';
+            
+            // Reverse history array to show newest first
+            [...historyData].reverse().forEach(item => {
+                html += `<div class="history-item">
+                    <div class="timestamp">${item.timestamp}</div>
+                    <div class="operation">${item.operation}</div>
+                    <div class="details">${item.details}</div>
+                </div>`;
+            });
+            
+            historyContainer.innerHTML = html;
+        }
+        
+        // Helper function for AJAX requests
+        function makeRequest(url, formData = null) {
+            return fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                renderList(data.list_data);
+                renderHistory(data.history);
+                return data;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        
+        // Add element form
+        document.getElementById('add-element-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('element-value');
+            const formData = new FormData();
+            formData.append('value', input.value);
+            
+            makeRequest('/add_element', formData).then(() => {
+                input.value = '';
+            });
+        });
+        
+        // Clear list button
+        document.getElementById('clear-list-btn').addEventListener('click', function() {
+            makeRequest('/clear_list');
+        });
+        
+        // Load example button
+        document.getElementById('load-example-btn').addEventListener('click', function() {
+            makeRequest('/load_example');
+        });
+        
+        // Copy list button
+        document.getElementById('copy-list-btn').addEventListener('click', function() {
+            makeRequest('/copy_list');
+        });
+        
+        // Reverse list button
+        document.getElementById('reverse-list-btn').addEventListener('click', function() {
+            makeRequest('/reverse_list');
+        });
+        
+        // Copy and reverse button
+        document.getElementById('copy-and-reverse-btn').addEventListener('click', function() {
+            makeRequest('/copy_and_reverse');
+        });
+        
+        // Clear history button
+        document.getElementById('clear-history-btn').addEventListener('click', function() {
+            makeRequest('/clear_history');
+        });
+    </script>
+</body>
+</html>
