@@ -1,9 +1,9 @@
 """
-https://nku-bmsb436-22-dll.yusuftalhaklc.com
-1210606019 - Yusuf Talha Kılıç
-BMSB436. Python Programlamaya Giriş - 22:nolu ödev
-'22. Çift yönlü bir bağlı listeyi (doubly linked list) kopyalayan ve tersine çeviren bir fonksiyon
-yazın.'
+    https://nku-bmsb436-22-dll.yusuftalhaklc.com
+    1210606019 - Yusuf Talha Kılıç
+    BMSB436. Python Programlamaya Giriş - 22:nolu ödev
+    '22. Çift yönlü bir bağlı listeyi (doubly linked list) kopyalayan ve tersine çeviren bir fonksiyon
+    yazın.'
 """
 class Node:
     def __init__(self, data):
